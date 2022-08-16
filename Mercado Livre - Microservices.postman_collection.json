@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "c8ba00d9-d086-48f7-98a8-1a226fc48334",
+		"name": "Mercado Livre - Microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18093113"
+	},
+	"item": [
+		{
+			"name": "Mercado Livre Service",
+			"item": [
+				{
+					"name": "Sync Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/mercadolivre/item/:itemId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"mercadolivre",
+								"item",
+								":itemId"
+							],
+							"variable": [
+								{
+									"key": "itemId",
+									"value": "MLB1046680598"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
