@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  postgresql:
+    image: postgres:14.1-alpine
+    container_name: postgresql
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-mercadolivre-service}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ADM1Nlab2022w3s}
+      - POSTGRES_DB=${POSTGRES_DB:-mercadolivre}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - type: tmpfs
+        target: /dev/shm
+    networks:
+      - backend
+  mercadolivre-service:
+    image: mercadolivre-service
+    container_name: mercadolivre-service
+    build: ./mercadolivre-service
+    depends_on:
+      - database-service
+    ports:
+      - 3000:3000
+    env_file:
+      - ./mercadolivre-service/.env
+    environment:
+      - PORT=${PORT:-3000}
+      - ML_URL=${ML_URL:-https://api.mercadolibre.com}
+      - DBSERVICE_URL=${DBSERVICE_URL:-http://database-service}
+      - DBSERVICE_PORT=${DBSERVICE_PORT:-4000}
+    links:
+      - database-service
+    networks:
+      - backend
+  database-service:
+    image: database-service
+    container_name: database-service
+    build: ./database-service
+    depends_on:
+      - postgresql
+    ports:
+      - 4000:4000
+    env_file:
+      - ./database-service/.env
+    environment:
+      - PORT=${PORT:-4000}
+      - DB_NAME=${DB_NAME:-mercadolivre}
+      - DB_USER=${DB_USER:-mercadolivre-service}
+      - DB_PASSWORD=${DB_PASSWORD:-ADM1Nlab2022w3s}
+      - DB_HOST=${DB_HOST:-postgresql}
+      - DB_PORT=${DB_PORT:-5432}
+    links:
+      - postgresql
+    networks:
+      - backend
+volumes:
+  pgdata:
+networks:
+  backend:
